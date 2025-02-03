@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lavagem de Carros</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Estilo para o total à esquerda do título */
+        #totalValor {
+            background-color: black;
+            color: white;
+            padding: 10px 20px;
+            font-size: 20px;
+            font-weight: bold;
+            border-radius: 5px;
+            margin-right: 20px;
+            display: inline-block;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 25px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <!-- Coloca o total à esquerda do título -->
+        <div>
+            <h1>Lavagem de Carros</h1>
+            <div id="dataAtual"></div>
+            <div class="nav-buttons">
+                <button id="anterior">Anterior</button>
+                <button id="proximo">Próximo</button>
+            </div>
+            </div>
+            <div><img src="/fotos/carro.png" alt="carro" style="width: 220px;"></div>
+        <div id="totalValor">
+            Total: R$ 0,00
+        </div>
+
+    </header>
+    
+    <main>
+        <!-- Formulário de Cadastro -->
+        <section id="formularioCadastro">
+            <form id="formCadastro">
+                <div class="form-container">
+                    <input type="text" id="nome" placeholder="Modelo do Carro" required>
+                    <input type="text" id="placa" placeholder="Placa" required>
+                    <input type="number" id="valor" placeholder="Valor" required>
+                    <button type="submit" id="cadastrar">Cadastrar</button>
+                    <!-- Paleta de cores -->
+                    <label for="cor">Cor:</label>
+                    <input type="color" id="cor" value="#ff0000">
+                </div>
+            </form>
+        </section>
+
+        <!-- Lista de Carros Lavados -->
+        <section id="listaCarros"></section>
+    </main>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const dataAtual = document.getElementById("dataAtual");
+            const form = document.getElementById("formCadastro");
+            const listaCarros = document.getElementById("listaCarros");
+            const anteriorButton = document.getElementById("anterior");
+            const proximoButton = document.getElementById("proximo");
+            const totalValor = document.getElementById("totalValor");
+
+            // Função para formatar a data
+            const formatarData = (data) => {
+                return new Date(data).toLocaleDateString("pt-BR", { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            };
+
+            // Obter o dia atual
+            let dataAtualizada = new Date();
+            let dataSelecionada = new Date(dataAtualizada); // Usar a data atual inicialmente
+
+            // Atualizar o texto da data no header
+            const atualizarData = () => {
+                dataAtual.textContent = formatarData(dataSelecionada);
+                carregarCarros(); // Carregar os carros do dia atual
+            };
+
+            // Navegar para o dia anterior
+            anteriorButton.addEventListener("click", () => {
+                dataSelecionada.setDate(dataSelecionada.getDate() - 1);
+                atualizarData();
+            });
+
+            // Navegar para o próximo dia
+            proximoButton.addEventListener("click", () => {
+                dataSelecionada.setDate(dataSelecionada.getDate() + 1);
+                atualizarData();
+            });
+
+            // Função para calcular a luminosidade de uma cor (usada para determinar o contraste do texto)
+            const calcularLuminosidade = (corHex) => {
+                let r = parseInt(corHex.slice(1, 3), 16);
+                let g = parseInt(corHex.slice(3, 5), 16);
+                let b = parseInt(corHex.slice(5, 7), 16);
+                
+                // Cálculo de luminosidade baseado no padrão de percepção humana
+                let luminosidade = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+                return luminosidade;
+            };
+
+            // Carregar carros do dia atual (do banco de dados ou localStorage)
+            const carregarCarros = () => {
+                const carros = JSON.parse(localStorage.getItem("carros")) || [];
+                const carrosDia = carros.filter(carro => carro.data === formatarData(dataSelecionada));
+                
+                listaCarros.innerHTML = "";
+                let total = 0;
+                carrosDia.forEach((carro, index) => {
+                    const div = document.createElement("div");
+                    div.classList.add("carro");
+                    div.style.backgroundColor = carro.cor;
+
+                    // Verificar a luminosidade da cor de fundo e mudar a cor do texto
+                    const luminosidade = calcularLuminosidade(carro.cor);
+                    if (luminosidade < 128) {
+                        div.classList.add("escura"); // Cor de fundo escura, texto branco
+                    } else {
+                        div.classList.add("clara"); // Cor de fundo clara, texto preto
+                    }
+
+                    div.innerHTML = ` 
+                        <p><strong>Nome:</strong> ${carro.nome}</p>
+                        <p><strong>Placa:</strong> ${carro.placa}</p>
+                        <p><strong>Valor:</strong> R$ ${carro.valor}</p>
+                        <button onclick="removerCarro(${index})">Remover</button>
+                    `;
+                    listaCarros.appendChild(div);
+
+                    // Somar o valor para o total
+                    total += parseFloat(carro.valor);
+                });
+
+                // Atualizar o total
+                totalValor.textContent = `Total: R$ ${total.toFixed(2)}`;
+            };
+
+            window.removerCarro = (index) => {
+                const carros = JSON.parse(localStorage.getItem("carros")) || [];
+                carros.splice(index, 1);
+                localStorage.setItem("carros", JSON.stringify(carros));
+                carregarCarros();
+            };
+
+            // Salvar um novo carro
+            form.addEventListener("submit", (e) => {
+                e.preventDefault();
+
+                const nome = document.getElementById("nome").value;
+                const cor = document.getElementById("cor").value;
+                const placa = document.getElementById("placa").value;
+                const valor = document.getElementById("valor").value;
+
+                const novoCarro = { nome, cor, placa, valor, data: formatarData(dataSelecionada) };
+                const carros = JSON.parse(localStorage.getItem("carros")) || [];
+                carros.push(novoCarro);
+
+                localStorage.setItem("carros", JSON.stringify(carros));
+
+                // Limpar formulário e reposicionar
+                form.reset();
+                carregarCarros();
+                window.scrollTo(0, document.body.scrollHeight);
+            });
+
+            // Inicializar a página
+            atualizarData();
+        });
+    </script>
+</body>
+</html>

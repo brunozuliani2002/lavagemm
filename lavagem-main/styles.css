@@ -1,0 +1,136 @@
+* {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #333;
+    color: rgb(197, 193, 194);
+    padding: 20px;
+    text-align: center;
+    border: 1px solid black;
+    border-radius: 3px;
+    box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.1);
+}
+.valor{
+    height: 100px;
+    width: 100px;
+}
+.nav-buttons {
+    margin-top: 10px;
+}
+
+#anterior, #proximo {
+    background-color: #4b23ea;
+    color: white;
+}
+
+
+#cadastrar{
+    font-size: 20px;
+}
+
+button {
+    background-color: rgb(197, 193, 194);
+    color: black;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #00c8ff;
+    transition: 1s;
+}
+
+#formularioCadastro {
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgb(192, 199, 255);
+    
+}
+
+#formularioCadastro .form-container {
+    display: flex;
+    justify-content: space-around;
+    gap: 15px;
+    width: 100%;
+    
+}
+
+input {
+    padding: 10px;
+    font-size: 16px;
+    width: 100%;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.1);
+}
+
+.valor-container {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    
+}
+
+button[type="submit"] {
+    background-color: #28a745;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+}
+
+button[type="submit"]:hover {
+    background-color: #218838;
+}
+
+#listaCarros {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 100px;
+    background-color: rgb(255, 255, 255);
+    border: #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    
+}
+
+.carro {
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: left;
+    font-size: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 250px;
+    box-shadow: 20px 20px 20px rgba(0, 0, 0, 0.5);
+}
+
+.carro.clara {
+    color: black;
+}
+
+.carro.escura {
+    color: white;
+}
+
+input[type="color"] {
+    width: 100%;
+    height: 40px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
